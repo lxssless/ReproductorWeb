@@ -1,0 +1,150 @@
+---
+const { request, cookies, redirect } = Astro;
+
+// Redirección si ya está autenticado
+const auth = cookies.get("auth");
+if (auth?.value === "true") {
+  return redirect("/");
+}
+
+let error = "";
+
+if (request.method === "POST") {
+  const formData = await request.formData();
+  const username = formData.get("email");
+  const password = formData.get("password");
+
+  if (username === "admin@demo.com" && password === "1234") {
+    cookies.set("auth", "true", {
+      path: "/",
+      httpOnly: true,
+    });
+
+    return redirect("/");
+  } else {
+    error = "Credenciales incorrectas";
+  }
+}
+---
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Iniciar Sesión</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Helvetica Neue", sans-serif;
+        background-color: #121216;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .login-box {
+        background-color: #1c1c1c;
+        padding: 2rem 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        width: 320px;
+        text-align: center;
+        position: relative;
+      }
+
+      h2 {
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      label {
+        text-align: justify;
+        display: block;
+        margin-top: 0.1rem;
+        font-size: 0.9rem;
+      }
+
+      input {
+        margin: 0.4rem 0;
+        padding: 0.6rem 0.8rem;
+        border-radius: 12px;
+        border: 1px solid #333;
+        background-color: #2a2a2a;
+        color: white;
+        font-size: 1rem;
+      }
+
+      input::placeholder {
+        color: #aaa;
+      }
+
+      button {
+        margin-top: 1rem;
+        padding: 0.6rem;
+        background-color: #1DB954;
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+        background-color: #1AA34A;
+      }
+
+      .error {
+        color: #ff5252;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .register-link {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .register-link a {
+        color: #ffffff;
+        text-decoration: underline;
+        transition: color 0.2s ease;
+      }
+
+      .register-link a:hover {
+        color: #1AA34A;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <h2>Iniciar sesión</h2>
+      <form method="post">
+        <label for="email">Correo electrónico</label>
+        <input type="email" name="email" required />
+
+        <label for="password">Contraseña</label>
+        <input type="password" name="password" required />
+
+        <button type="submit">Ingresar</button>
+
+        {error && <p class="error">{error}</p>}
+      </form>
+    </div>
+
+    <div class="register-link">
+      <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+    </div>
+  </body>
+</html>

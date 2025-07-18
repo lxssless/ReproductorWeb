@@ -1,0 +1,9 @@
+---
+const { cookies, redirect } = Astro;
+
+// Elimina la cookie de autenticación
+cookies.delete("auth", { path: "/" });
+
+// Redirige al login
+return redirect("/login");
+---

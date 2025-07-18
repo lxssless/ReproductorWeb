@@ -1,0 +1,133 @@
+---
+const { request, cookies, redirect } = Astro;
+
+if (request.method === "POST") {
+  const formData = await request.formData();
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+
+  if (email && password) {
+    cookies.set("auth", "true", {
+      path: "/",
+      httpOnly: true,
+    });
+    return redirect("/");
+  } else {
+    return new Response("Faltan datos", { status: 400 });
+  }
+}
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registro</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background-color: #121212;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .register-box {
+        background-color: #1e1e1e;
+        padding: 2rem;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        width: 300px;
+      }
+
+      h2 {
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      label {
+        display: block;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      input {
+        margin-top: 0.3rem;
+        padding: 0.5rem;
+        border-radius: 12px;
+        border: 1px solid #333;
+        background-color: #2a2a2a;
+        color: white;
+        width: 100%;
+      }
+
+      input::placeholder {
+        color: #aaa;
+      }
+
+      button {
+        margin-top: 1.5rem;
+        width: 100%;
+        padding: 0.6rem;
+        background: #1DB954;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      button:hover {
+        transform: scale(1.05);
+      }
+
+      .footer {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .footer a {
+        color: white;
+        text-decoration: underline;
+        transition: color 0.2s ease;
+      }
+
+      .footer a:hover {
+        color: #1DB954;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="register-box">
+        <h2>Regístrate</h2>
+
+        <form method="post">
+          <label for="email">Correo electrónico</label>
+          <input type="email" id="email" name="email" required />
+
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" name="password" required />
+
+          <button type="submit">Continuar</button>
+        </form>
+      </div>
+
+      <div class="footer">
+        ¿Ya tienes una cuenta?
+        <a href="/login">Inicia Sesión</a>
+      </div>
+    </div>
+  </body>
+</html>
